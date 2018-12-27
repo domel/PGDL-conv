@@ -1,0 +1,36 @@
+%YAML 1.1
+---
+metadata:
+  created: '2018-11-13' # bla
+  creator: "Dominik Tomaszuk"
+shapes: 
+  - 
+    edges: 
+      - 
+        directed: true
+        name: ACTED_IN
+        node: Movie
+        relations: 
+          - 
+            datatype: string
+            name: role
+    properties: 
+      - 
+        cardinality: 1
+        datatype: string
+        name: name
+      - 
+        datatype: int
+        name: born
+    targetNode: Person
+  - 
+    properties: 
+      - 
+        cardinality: 1
+        datatype: string
+        name: title
+      - 
+        datatype: int
+        name: realized
+    targetNode: Movie
+
