@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import argparse
 import json
+import cbor
 from xml.dom.minidom import parseString
 
 import dicttoxml
@@ -15,6 +16,8 @@ parser.add_argument("-m", "--metadata", help="display PGDL metadata",
 parser.add_argument("-j", "--json", help="display PGDL in JSON",
                     action="store_true")
 parser.add_argument("-pj", "--prettyjson", help="display PGDL in pretty JSON",
+                    action="store_true")
+parser.add_argument("-c", "--cbor", help="display PGDL in CBOR (binary JSON)",
                     action="store_true")
 parser.add_argument("-x", "--xml", help="display PDGL in XML",
                     action="store_true")
@@ -56,6 +59,9 @@ if args.file:
     if args.json:
         json = json.dumps(data)
         print(json)
+    if args.cbor:
+        cbor = cbor.dumps(data)
+        print(cbor)
     if args.prettyjson:
         json = json.dumps(data, indent=2, sort_keys=True)
         print(json)
