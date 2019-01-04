@@ -78,7 +78,6 @@ if args.file:
     if args.pgdl:
         print(raw)
     if args.shacl:
-        print('# This option is not fully supported')
         g = Graph()
         doc = BNode()
         dct = Namespace("http://purl.org/dc/terms/")
