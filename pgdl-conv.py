@@ -98,52 +98,79 @@ if args.file:
             print('# There is no information about creator')
 
         for shape in data.get('shapes', []):
-            tn1 = shape.get('targetNode', [])
-            g.add((pg.Shape1, RDF.type, sh.NodeShape))
-            g.add((pg.Shape1, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
+            try:
+                tn1 = shape['targetNode']
+                g.add((pg.Shape1, RDF.type, sh.NodeShape))
+                g.add((pg.Shape1, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
+            except:
+                print('# There is no information about target node')
 
             for property in shape.get('properties', []):
-                pn1 = property.get('name', [])
-                prop = BNode()
-                g.add((pg.Shape1, sh.property, prop))
-                g.add((prop, sh.path, URIRef("urn:pg:1.0:" + pn1)))
-                pdt1 = property.get('datatype', [])
+                try:
+                    pn1 = property['name']
+                    prop = BNode()
+                    g.add((pg.Shape1, sh.property, prop))
+                    g.add((prop, sh.path, URIRef("urn:pg:1.0:" + pn1)))
+                except:
+                    print('# There is no information about property name')
 
-                if pdt1 == 'string':
-                    pdt1 = xsd.string
-                elif pdt1 == 'int':
-                    pdt1 = xsd.int
-                elif pdt1 == 'integer':
-                    pdt1 = xsd.integer
-                elif pdt1 == 'boolean':
-                    pdt1 = xsd.boolean
-                elif pdt1 == 'decimal':
-                    pdt1 = xsd.decimal
-                elif pdt1 == 'float':
-                    pdt1 = xsd.float
-                elif pdt1 == 'double':
-                    pdt1 = xsd.double
-                g.add((prop, sh.datatype, pdt1))
+                try:
+                    pdt1 = property['datatype']
+                    if pdt1 == 'string':
+                        pdt1 = xsd.string
+                    elif pdt1 == 'int':
+                        pdt1 = xsd.int
+                    elif pdt1 == 'integer':
+                        pdt1 = xsd.integer
+                    elif pdt1 == 'boolean':
+                        pdt1 = xsd.boolean
+                    elif pdt1 == 'decimal':
+                        pdt1 = xsd.decimal
+                    elif pdt1 == 'float':
+                        pdt1 = xsd.float
+                    elif pdt1 == 'double':
+                        pdt1 = xsd.double
+                    g.add((prop, sh.datatype, pdt1))
+                except:
+                    print('# There is no information about property data type')
 
             for edge in shape.get('edges', []):
-                pp1 = edge.get('name', [])
-                prop2 = BNode()
-                g.add((pg.Shape1, sh.property, prop2))
-                g.add((prop2, sh.path, URIRef("urn:pg:1.0:" + pp1)))
-                pnd1 = edge.get('node', [])
-                g.add((prop2, sh.node, URIRef("urn:pg:1.0:" + pnd1)))
+                try:
+                    pp1 = edge['name']
+                    prop2 = BNode()
+                    g.add((pg.Shape1, sh.property, prop2))
+                    g.add((prop2, sh.path, URIRef("urn:pg:1.0:" + pp1)))
+                except:
+                    print('# There is no information about edge name')
+
+                try:
+                    pnd1 = edge['node']
+                    g.add((prop2, sh.node, URIRef("urn:pg:1.0:" + pnd1)))
+                except:
+                    print('# There is no information about edge node')
 
                 rel = BNode()
-                g.add((prop2, pgsh.relation, rel))
+
+                try:
+                    g.add((prop2, pgsh.relation, rel))
+                except:
+                    print()
 
                 for relation in edge.get('relations', []):
-                    nky1 = relation.get('name', [])
-                    g.add((rel, pgsh.key, URIRef("urn:pg:1.0:" + nky1)))
-                    rdt1 = relation.get('datatype', [])
-                    if rdt1 == 'string':
-                        rdt1 = xsd.string
-                    elif pdt1 == 'int':
-                        rdt1 = xsd.int
-                    g.add((rel, sh.datatype, rdt1))
+                    try:
+                        nky1 = relation['name']
+                        g.add((rel, pgsh.key, URIRef("urn:pg:1.0:" + nky1)))
+                    except:
+                        print('# There is no information about relation name')
+
+                    try:
+                        rdt1 = relation['datatype']
+                        if rdt1 == 'string':
+                            rdt1 = xsd.string
+                        elif pdt1 == 'int':
+                            rdt1 = xsd.int
+                        g.add((rel, sh.datatype, rdt1))
+                    except:
+                        print('# There is no information about relation datatype')
 
         print(g.serialize(format='turtle').decode("utf-8"))
