@@ -96,37 +96,44 @@ if args.file:
             g.add((doc, dct.creator, Literal(creator)))
         except:
             print('# There is no information about creator')
-        tn1 = data['shapes'][0]['targetNode']
-        g.add((pg.Shape1, RDF.type, sh.NodeShape))
-        g.add((pg.Shape1, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
-        pn1 = data['shapes'][0]['properties'][0]['name']
-        prop = BNode()
-        g.add((pg.Shape1, sh.property, prop))
-        g.add((prop, sh.path, URIRef("urn:pg:1.0:" + pn1)))
-        pdt1 = data['shapes'][0]['properties'][0]['datatype']
 
-        if pdt1 == 'string':
-            pdt1 = xsd.string
-        elif pdt1 == 'int':
-            pdt1 = xsd.int
-        g.add((prop, sh.datatype, pdt1))
+        for shape in data.get('shapes', []):
+            tn1 = shape.get('targetNode', [])
+            g.add((pg.Shape1, RDF.type, sh.NodeShape))
+            g.add((pg.Shape1, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
 
-        pp1 = data['shapes'][0]['edges'][0]['name']
-        prop2 = BNode()
-        g.add((pg.Shape1, sh.property, prop2))
-        g.add((prop2, sh.path, URIRef("urn:pg:1.0:" + pp1)))
-        pnd1 = data['shapes'][0]['edges'][0]['node']
-        g.add((prop2, sh.node, URIRef("urn:pg:1.0:" + pnd1)))
+            for property in shape.get('properties', []):
+                pn1 = property.get('name', [])
+                prop = BNode()
+                g.add((pg.Shape1, sh.property, prop))
+                g.add((prop, sh.path, URIRef("urn:pg:1.0:" + pn1)))
+                pdt1 = property.get('datatype', [])
 
-        rel = BNode()
-        g.add((prop2, pgsh.relation, rel))
-        nky1 = data['shapes'][0]['edges'][0]['relations'][0]['name']
-        g.add((rel, pgsh.key, URIRef("urn:pg:1.0:" + nky1)))
-        rdt1 = data['shapes'][0]['edges'][0]['relations'][0]['datatype']
-        if rdt1 == 'string':
-            rdt1 = xsd.string
-        elif pdt1 == 'int':
-            rdt1 = xsd.int
-        g.add((rel, sh.datatype, rdt1))
+                if pdt1 == 'string':
+                    pdt1 = xsd.string
+                elif pdt1 == 'int':
+                    pdt1 = xsd.int
+                g.add((prop, sh.datatype, pdt1))
+
+            for edge in shape.get('edges', []):
+                pp1 = edge.get('name', [])
+                prop2 = BNode()
+                g.add((pg.Shape1, sh.property, prop2))
+                g.add((prop2, sh.path, URIRef("urn:pg:1.0:" + pp1)))
+                pnd1 = edge.get('node', [])
+                g.add((prop2, sh.node, URIRef("urn:pg:1.0:" + pnd1)))
+
+                rel = BNode()
+                g.add((prop2, pgsh.relation, rel))
+
+                for relation in edge.get('relations', []):
+                    nky1 = relation.get('name', [])
+                    g.add((rel, pgsh.key, URIRef("urn:pg:1.0:" + nky1)))
+                    rdt1 = relation.get('datatype', [])
+                    if rdt1 == 'string':
+                        rdt1 = xsd.string
+                    elif pdt1 == 'int':
+                        rdt1 = xsd.int
+                    g.add((rel, sh.datatype, rdt1))
 
         print(g.serialize(format='turtle').decode("utf-8"))
