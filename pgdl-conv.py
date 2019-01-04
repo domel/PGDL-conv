@@ -86,6 +86,29 @@ if args.file:
         pg = Namespace("urn:pg:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
         pgsh = Namespace("http://ii.uwb.edu.pl/shpg#")
+
+        def set_datatype(f):
+            if f == 'string':
+                return xsd.string
+            elif f == 'int':
+                return xsd.int
+            elif f == 'integer':
+                return xsd.integer
+            elif f == 'boolean':
+                return xsd.boolean
+            elif f == 'decimal':
+                return xsd.decimal
+            elif f == 'float':
+                return xsd.float
+            elif f == 'double':
+                return xsd.double
+            elif f == 'dateTime':
+                return xsd.dateTime
+            elif f == 'time':
+                return xsd.time
+            elif f == 'date':
+                return xsd.date
+
         try:
             created = data['metadata']['created']
             g.add((doc, dct.created, Literal(created, datatype=xsd.date)))
@@ -116,26 +139,7 @@ if args.file:
 
                 try:
                     pdt1 = property['datatype']
-                    if pdt1 == 'string':
-                        pdt1 = xsd.string
-                    elif pdt1 == 'int':
-                        pdt1 = xsd.int
-                    elif pdt1 == 'integer':
-                        pdt1 = xsd.integer
-                    elif pdt1 == 'boolean':
-                        pdt1 = xsd.boolean
-                    elif pdt1 == 'decimal':
-                        pdt1 = xsd.decimal
-                    elif pdt1 == 'float':
-                        pdt1 = xsd.float
-                    elif pdt1 == 'double':
-                        pdt1 = xsd.double
-                    elif pdt1 == 'dateTime':
-                        pdt1 = xsd.dateTime
-                    elif pdt1 == 'time':
-                        pdt1 = xsd.time
-                    elif pdt1 == 'date':
-                        pdt1 = xsd.date
+                    pdt1 = set_datatype(pdt1)
                     g.add((prop, sh.datatype, pdt1))
                 except:
                     print('# There is no information about property data type')
@@ -171,10 +175,7 @@ if args.file:
 
                     try:
                         rdt1 = relation['datatype']
-                        if rdt1 == 'string':
-                            rdt1 = xsd.string
-                        elif rdt1 == 'int':
-                            rdt1 = xsd.int
+                        rdt1 = set_datatype(rdt1)
                         g.add((rel, sh.datatype, rdt1))
                     except:
                         print('# There is no information about relation datatype')
