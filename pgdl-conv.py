@@ -113,6 +113,16 @@ if args.file:
                     pdt1 = xsd.string
                 elif pdt1 == 'int':
                     pdt1 = xsd.int
+                elif pdt1 == 'integer':
+                    pdt1 = xsd.integer
+                elif pdt1 == 'boolean':
+                    pdt1 = xsd.boolean
+                elif pdt1 == 'decimal':
+                    pdt1 = xsd.decimal
+                elif pdt1 == 'float':
+                    pdt1 = xsd.float
+                elif pdt1 == 'double':
+                    pdt1 = xsd.double
                 g.add((prop, sh.datatype, pdt1))
 
             for edge in shape.get('edges', []):
