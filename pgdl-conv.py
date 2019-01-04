@@ -130,6 +130,12 @@ if args.file:
                         pdt1 = xsd.float
                     elif pdt1 == 'double':
                         pdt1 = xsd.double
+                    elif pdt1 == 'dateTime':
+                        pdt1 = xsd.dateTime
+                    elif pdt1 == 'time':
+                        pdt1 = xsd.time
+                    elif pdt1 == 'date':
+                        pdt1 = xsd.date
                     g.add((prop, sh.datatype, pdt1))
                 except:
                     print('# There is no information about property data type')
@@ -167,7 +173,7 @@ if args.file:
                         rdt1 = relation['datatype']
                         if rdt1 == 'string':
                             rdt1 = xsd.string
-                        elif pdt1 == 'int':
+                        elif rdt1 == 'int':
                             rdt1 = xsd.int
                         g.add((rel, sh.datatype, rdt1))
                     except:
