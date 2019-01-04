@@ -163,7 +163,7 @@ if args.file:
                 try:
                     g.add((prop2, pgsh.relation, rel))
                 except:
-                    print()
+                    print('# No relation')
 
                 for relation in edge.get('relations', []):
                     try:
