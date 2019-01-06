@@ -26,6 +26,7 @@ pgdl-conv.py [-h] [-m] [-j] [-pj] [-c] [-x] [-px] [-y] [-p] [-s] file
   -px, --prettyxml   display PDGL in pretty XML
   -y, --yaml         display PDGL in compact YAML
   -p, --pgdl         display PDGL (in YAML)
+  -g, --graphql      display GraphQL
   -s, --shacl        display (PG)SHACL (in RDF)
 ```
 

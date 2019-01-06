@@ -29,6 +29,8 @@ parser.add_argument("-y", "--yaml", help="display PDGL in compact YAML",
 #                     action="store_true")
 parser.add_argument("-p", "--pgdl", help="display PDGL (in YAML)",
                     action="store_true")
+parser.add_argument("-g", "--graphql", help="display GraphQL",
+                    action="store_true")
 parser.add_argument("-s", "--shacl", help="display (PG)SHACL (in RDF)",
                     action="store_true")
 
@@ -77,6 +79,108 @@ if args.file:
         print(yaml.dump(data))
     if args.pgdl:
         print(raw)
+    if args.graphql:
+        indentation = '  '
+
+        def set_datatype(f):
+            if f == 'string':
+                return 'String'
+            elif f == 'int':
+                return 'Int'
+            elif f == 'integer':
+                return 'Int'
+            elif f == 'boolean':
+                return 'Boolean'
+            elif f == 'decimal':
+                return 'Float'
+            elif f == 'float':
+                return 'Float'
+            elif f == 'double':
+                return 'Float'
+            elif f == 'dateTime':
+                return 'String'
+            elif f == 'time':
+                return 'String'
+            elif f == 'date':
+                return 'String'
+
+
+        def print_edge_details(pnd, direction):
+            if edge_directed:
+                print(indentation + pnd.lower() + 's: [' + pnd + '] @relation(name:\"' +
+                      pp1 + '\",direction:' + direction + ')')
+            else:
+                print(indentation + pnd.lower() + 's: [' + pnd + '] @relation(name:\"' + pp1 + ')')
+
+
+        def print_relation_details():
+            print(indentation + '@property(name:' + '\"' + nky1 + '\", datatype:\"' + rdt1 + '\")')
+
+
+        for shape in data.get('shapes', []):
+            try:
+                tn1 = shape['targetNode']
+                print('type ' + tn1 + ' {')
+            except:
+                print('# There is no information about target node')
+
+            for property in shape.get('properties', []):
+                try:
+                    pn1 = property['name']
+                    pdt1 = property['datatype']
+                    pdt1 = set_datatype(pdt1)
+                    print(indentation + pn1 + ': ' + pdt1 + '!')
+                except:
+                    print(indentation + '# There is no information about property name or data type')
+
+            try:
+                for edge in shape['edges']:
+                    try:
+                        edge_directed = edge['directed']
+                    except:
+                        edge_directed = None
+                        print(indentation + '# There is no information about edge direction')
+
+                    try:
+                        pp1 = edge['name']
+                    except:
+                        print(indentation + '# There is no information about edge name')
+
+                    try:
+                        pnd1 = edge['node']
+                    except:
+                        print(indentation + '# There is no information about edge node')
+
+                    try:
+                        print_edge_details(pnd1, 'OUT')
+                    except:
+                        print(indentation + '# Error while printing edge details')
+
+                    for relation in edge.get('relations', []):
+                        try:
+                            nky1 = relation['name']
+                        except:
+                            print(indentation + '# There is no information about relation name')
+
+                        try:
+                            rdt1 = relation['datatype']
+                            rdt1 = set_datatype(rdt1)
+                            print_relation_details()
+                        except:
+                            print(indentation + '# There is no information about relation datatype')
+            except:
+                # print(indentation + '# There is no information about edge.')
+                try:
+                    for sh in data.get('shapes', []):
+                        if sh['targetNode'] == pnd1:
+                            # TODO
+                            print_edge_details('Person', 'IN')
+                            print_relation_details()
+                except:
+                    print(indentation + '# Failed to add edge & relationship information')
+
+            print('}\n')
+
     if args.shacl:
         g = Graph()
         doc = BNode()
@@ -85,6 +189,7 @@ if args.file:
         pg = Namespace("urn:pg:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
         pgsh = Namespace("http://ii.uwb.edu.pl/shpg#")
+
 
         def set_datatype(f):
             if f == 'string':
@@ -107,6 +212,7 @@ if args.file:
                 return xsd.time
             elif f == 'date':
                 return xsd.date
+
 
         try:
             created = data['metadata']['created']
