@@ -114,7 +114,7 @@ if args.file:
 
 
         def print_relation_details():
-            print(indentation + '@property(name:' + '\"' + nky1 + '\", datatype:\"' + rdt1 + '\")')
+            print(indentation + '@property(name:' + '\"' + nky1 + '\",datatype:\"' + rdt1 + '\")')
 
 
         for shape in data.get('shapes', []):
