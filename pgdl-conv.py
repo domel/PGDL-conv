@@ -286,3 +286,6 @@ if args.file:
                         print('# There is no information about relation datatype')
 
         print(g.serialize(format='turtle').decode("utf-8"))
+        
+    else:
+        parser.print_help()
