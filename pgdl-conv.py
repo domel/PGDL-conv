@@ -3,6 +3,7 @@ import argparse
 import json
 import cbor
 from xml.dom.minidom import parseString
+import qtoml
 
 import dicttoxml
 import yaml
@@ -22,6 +23,8 @@ parser.add_argument("-c", "--cbor", help="display PGDL in CBOR (binary JSON)",
 parser.add_argument("-x", "--xml", help="display PDGL in XML",
                     action="store_true")
 parser.add_argument("-px", "--prettyxml", help="display PDGL in pretty XML",
+                    action="store_true")
+parser.add_argument("-t", "--toml", help="display TOML",
                     action="store_true")
 parser.add_argument("-y", "--yaml", help="display PDGL in compact YAML",
                     action="store_true")
@@ -75,6 +78,9 @@ if args.file:
         x = xml.decode("utf-8")
         dom = parseString(x)
         print(dom.toprettyxml())
+    if args.toml:
+        toml = qtoml.dumps(data)
+        print(toml)
     if args.yaml:
         print(yaml.dump(data))
     if args.pgdl:
