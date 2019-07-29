@@ -3,6 +3,7 @@ import argparse
 import json
 import cbor
 from xml.dom.minidom import parseString
+import qtoml
 
 import dicttoxml
 import yaml
@@ -24,6 +25,8 @@ group.add_argument("-c", "--cbor", help="display PGDL in CBOR (binary JSON)",
 group.add_argument("-x", "--xml", help="display PDGL in XML",
                     action="store_true")
 group.add_argument("-px", "--prettyxml", help="display PDGL in pretty XML",
+                    action="store_true")
+group.add_argument("-t", "--toml", help="display TOML",
                     action="store_true")
 group.add_argument("-y", "--yaml", help="display PDGL in compact YAML",
                     action="store_true")
@@ -77,6 +80,9 @@ if args.file:
         x = xml.decode("utf-8")
         dom = parseString(x)
         print(dom.toprettyxml())
+    if args.toml:
+        toml = qtoml.dumps(data)
+        print(toml)
     if args.yaml:
         print(yaml.dump(data))
     if args.pgdl:
@@ -116,7 +122,7 @@ if args.file:
 
 
         def print_relation_details():
-            print(indentation + '@property(name:' + '\"' + nky1 + '\", datatype:\"' + rdt1 + '\")')
+            print(indentation + '@property(name:' + '\"' + nky1 + '\",datatype:\"' + rdt1 + '\")')
 
 
         for shape in data.get('shapes', []):
@@ -288,3 +294,6 @@ if args.file:
                         print('# There is no information about relation datatype')
 
         print(g.serialize(format='turtle').decode("utf-8"))
+        
+    else:
+        parser.print_help()
