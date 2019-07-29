@@ -5,7 +5,9 @@ Property Graph Definition Language converter for many other formats including [J
 ## Usage
 
 ```shell
-pgdl-conv.py [-h] [-m] [-j] [-pj] [-c] [-x] [-px] [-t] [-y] [-p] [-s] file
+usage: pgdl-conv.py [-h]
+                    (-m | -j | -pj | -c | -x | -px | -t | -y | -p | -g | -s)
+                    file
 ```
 
 ### Positional arguments
