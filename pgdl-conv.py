@@ -11,27 +11,29 @@ from rdflib import Graph, Literal, BNode, Namespace, RDF, URIRef
 parser = argparse.ArgumentParser(description='Process PGDL documents.')
 parser.add_argument('file', type=str,
                     help='a PGDL file')
-parser.add_argument("-m", "--metadata", help="display PGDL metadata",
+
+group = parser.add_mutually_exclusive_group(required=True)
+group.add_argument("-m", "--metadata", help="display PGDL metadata",
                     action="store_true")
-parser.add_argument("-j", "--json", help="display PGDL in JSON",
+group.add_argument("-j", "--json", help="display PGDL in JSON",
                     action="store_true")
-parser.add_argument("-pj", "--prettyjson", help="display PGDL in pretty JSON",
+group.add_argument("-pj", "--prettyjson", help="display PGDL in pretty JSON",
                     action="store_true")
-parser.add_argument("-c", "--cbor", help="display PGDL in CBOR (binary JSON)",
+group.add_argument("-c", "--cbor", help="display PGDL in CBOR (binary JSON)",
                     action="store_true")
-parser.add_argument("-x", "--xml", help="display PDGL in XML",
+group.add_argument("-x", "--xml", help="display PDGL in XML",
                     action="store_true")
-parser.add_argument("-px", "--prettyxml", help="display PDGL in pretty XML",
+group.add_argument("-px", "--prettyxml", help="display PDGL in pretty XML",
                     action="store_true")
-parser.add_argument("-y", "--yaml", help="display PDGL in compact YAML",
+group.add_argument("-y", "--yaml", help="display PDGL in compact YAML",
                     action="store_true")
 # parser.add_argument("-py", "--prettyyaml", help="display PDGL in compact YAML",
 #                     action="store_true")
-parser.add_argument("-p", "--pgdl", help="display PDGL (in YAML)",
+group.add_argument("-p", "--pgdl", help="display PDGL (in YAML)",
                     action="store_true")
-parser.add_argument("-g", "--graphql", help="display GraphQL",
+group.add_argument("-g", "--graphql", help="display GraphQL",
                     action="store_true")
-parser.add_argument("-s", "--shacl", help="display (PG)SHACL (in RDF)",
+group.add_argument("-s", "--shacl", help="display (PG)SHACL (in RDF)",
                     action="store_true")
 
 args = parser.parse_args()
