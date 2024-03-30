@@ -1,0 +1,31 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shpg: <http://ii.uwb.edu.pl/shpg#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+<urn:pg:1.0:Shape1> a sh:NodeShape ;
+    sh:property [ shpg:relation [ shpg:key <urn:pg:1.0:role> ;
+                    sh:datatype xsd:string ] ;
+            sh:node <urn:pg:1.0:Movie> ;
+            sh:path <urn:pg:1.0:ACTED_IN> ],
+        [ sh:datatype xsd:string ;
+            sh:path <urn:pg:1.0:name> ],
+        [ sh:datatype xsd:int ;
+            sh:path <urn:pg:1.0:born> ] ;
+    sh:targetNode <urn:pg:1.0:Person> .
+
+<urn:pg:1.0:Shape2> a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:path <urn:pg:1.0:title> ],
+        [ sh:datatype xsd:int ;
+            sh:path <urn:pg:1.0:realized> ] ;
+    sh:targetNode <urn:pg:1.0:Movie> .
+
+[] dcterms:created "2018-11-13"^^xsd:date ;
+   dcterms:publisher "bla" ;
+   rdfs:label "et" ;
+   owl:versionInfo "1.0" ;
+    dcterms:creator "Dominik Tomaszuk" .
+

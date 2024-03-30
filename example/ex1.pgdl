@@ -4,33 +4,25 @@ metadata:
   created: '2018-11-13' # bla
   creator: "Dominik Tomaszuk"
 shapes: 
-  - 
+  - targetNode: Person
+    properties: 
+      - cardinality: 1
+        datatype: string
+        name: name
+      - datatype: int
+        name: born
     edges: 
-      - 
-        directed: true
+      - directed: true
         name: ACTED_IN
         node: Movie
         relations: 
-          - 
+          - name: role
             datatype: string
-            name: role
+  - targetNode: Movie
     properties: 
-      - 
-        cardinality: 1
-        datatype: string
-        name: name
-      - 
-        datatype: int
-        name: born
-    targetNode: Person
-  - 
-    properties: 
-      - 
-        cardinality: 1
+      - cardinality: 1
         datatype: string
         name: title
-      - 
-        datatype: int
+      - datatype: int
         name: realized
-    targetNode: Movie
 

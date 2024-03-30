@@ -44,7 +44,7 @@ args = parser.parse_args()
 if args.file:
     with open(args.file, 'r') as stream:
         try:
-            data = yaml.load(stream)
+            data = yaml.load(stream, Loader=yaml.SafeLoader)
             with open(args.file, 'r') as s:
                 raw = s.read()
         except yaml.YAMLError as exc:
@@ -197,103 +197,80 @@ if args.file:
         pg = Namespace("urn:pg:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
         pgsh = Namespace("http://ii.uwb.edu.pl/shpg#")
-
+        g.bind("shpg", pgsh)
 
         def set_datatype(f):
-            if f == 'string':
-                return xsd.string
-            elif f == 'int':
-                return xsd.int
-            elif f == 'integer':
-                return xsd.integer
-            elif f == 'boolean':
-                return xsd.boolean
-            elif f == 'decimal':
-                return xsd.decimal
-            elif f == 'float':
-                return xsd.float
-            elif f == 'double':
-                return xsd.double
-            elif f == 'dateTime':
-                return xsd.dateTime
-            elif f == 'time':
-                return xsd.time
-            elif f == 'date':
-                return xsd.date
-
+            return {
+                'string': xsd.string,
+                'int': xsd.int,
+                'integer': xsd.integer,
+                'boolean': xsd.boolean,
+                'decimal': xsd.decimal,
+                'float': xsd.float,
+                'double': xsd.double,
+                'dateTime': xsd.dateTime,
+                'time': xsd.time,
+                'date': xsd.date,
+            }.get(f)
 
         try:
             created = data['metadata']['created']
             g.add((doc, dct.created, Literal(created, datatype=xsd.date)))
-        except:
+        except KeyError:
             print('# There is no information about date of creation')
+
         try:
             creator = data['metadata']['creator']
             g.add((doc, dct.creator, Literal(creator)))
-        except:
+        except KeyError:
             print('# There is no information about creator')
 
+        shape_counter = 1
         for shape in data.get('shapes', []):
+            shape_id = f"Shape{shape_counter}"
+            shape_counter += 1
             try:
                 tn1 = shape['targetNode']
-                g.add((pg.Shape1, RDF.type, sh.NodeShape))
-                g.add((pg.Shape1, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
-            except:
+                shape_ref = URIRef(f"urn:pg:1.0:{shape_id}")
+                g.add((shape_ref, RDF.type, sh.NodeShape))
+                g.add((shape_ref, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
+            except KeyError:
                 print('# There is no information about target node')
 
             for property in shape.get('properties', []):
+                prop = BNode()
                 try:
                     pn1 = property['name']
-                    prop = BNode()
-                    g.add((pg.Shape1, sh.property, prop))
+                    g.add((shape_ref, sh.property, prop))
                     g.add((prop, sh.path, URIRef("urn:pg:1.0:" + pn1)))
-                except:
-                    print('# There is no information about property name')
-
-                try:
-                    pdt1 = property['datatype']
-                    pdt1 = set_datatype(pdt1)
-                    g.add((prop, sh.datatype, pdt1))
-                except:
-                    print('# There is no information about property data type')
+                    pdt1 = set_datatype(property.get('datatype'))
+                    if pdt1:
+                        g.add((prop, sh.datatype, pdt1))
+                except KeyError as e:
+                    print(f'# There is no information about property: {e}')
 
             for edge in shape.get('edges', []):
+                prop2 = BNode()
                 try:
                     pp1 = edge['name']
-                    prop2 = BNode()
-                    g.add((pg.Shape1, sh.property, prop2))
+                    g.add((shape_ref, sh.property, prop2))
                     g.add((prop2, sh.path, URIRef("urn:pg:1.0:" + pp1)))
-                except:
-                    print('# There is no information about edge name')
-
-                try:
                     pnd1 = edge['node']
                     g.add((prop2, sh.node, URIRef("urn:pg:1.0:" + pnd1)))
-                except:
-                    print('# There is no information about edge node')
 
-                rel = BNode()
-
-                try:
+                    rel = BNode()
                     g.add((prop2, pgsh.relation, rel))
-                except:
-                    print('# No relation')
 
-                for relation in edge.get('relations', []):
-                    try:
+                    for relation in edge.get('relations', []):
                         nky1 = relation['name']
                         g.add((rel, pgsh.key, URIRef("urn:pg:1.0:" + nky1)))
-                    except:
-                        print('# There is no information about relation name')
+                        rdt1 = set_datatype(relation.get('datatype'))
+                        if rdt1:
+                            g.add((rel, sh.datatype, rdt1))
+                except KeyError as e:
+                    print(f'# There is no information about edge or relation: {e}')
 
-                    try:
-                        rdt1 = relation['datatype']
-                        rdt1 = set_datatype(rdt1)
-                        g.add((rel, sh.datatype, rdt1))
-                    except:
-                        print('# There is no information about relation datatype')
-
-        print(g.serialize(format='turtle').decode("utf-8"))
+        print(g.serialize(format='turtle'))
         
-    else:
-        parser.print_help()
+else:
+    parser.print_help()
