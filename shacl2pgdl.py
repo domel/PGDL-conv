@@ -12,6 +12,7 @@ RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 OWL = Namespace("http://www.w3.org/2002/07/owl#")
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 
+
 def get_last_segment(uri):
     """
     Extracts the last segment from a URI.
@@ -25,33 +26,43 @@ def parse_shacl(graph):
     # Extract metadata
     for term in ['title', 'creator', 'subject', 'description', 'publisher', 'contributor', 'date', 'type', 'format', 'identifier', 'source', 'language', 'relation', 'coverage', 'rights']:
         for s, p, o in graph.triples((None, DCTERMS[term], None)):
-            if term not in metadata:
-                metadata[term] = []
-            metadata[term].append(str(o))
+            if isinstance(s, rdflib.term.BNode) or (isinstance(s, rdflib.term.URIRef) and (str(s).endswith('/') or str(s).endswith('#'))):
+                if o not in (SH.NodeShape, SH.PropertyGroup, SH.PropertyShape):
+                    if term not in metadata:
+                        metadata[term] = []
+                    metadata[term].append(str(o))
 
-    for date_term in ['created', 'issued', 'modified']:
-        for s, p, o in graph.triples((None, DCTERMS[date_term], None)):
-            if date_term not in metadata:
-                metadata[date_term] = []
-            metadata[date_term].append(str(o))
+    for term in ['created', 'issued', 'modified']:
+        for s, p, o in graph.triples((None, DCTERMS[term], None)):
+            if isinstance(s, rdflib.term.BNode) or (isinstance(s, rdflib.term.URIRef) and (str(s).endswith('/') or str(s).endswith('#'))):
+                if o not in (SH.NodeShape, SH.PropertyGroup, SH.PropertyShape):
+                    if term not in metadata:
+                        metadata[term] = []
+                    metadata[term].append(str(o))
 
     for term in ['label', 'comment', 'seeAlso', 'isDefinedBy']:
         for s, p, o in graph.triples((None, RDFS[term], None)):
-            if term not in metadata:
-                metadata[term] = []
-            metadata[term].append(str(o))
+            if isinstance(s, rdflib.term.BNode) or (isinstance(s, rdflib.term.URIRef) and (str(s).endswith('/') or str(s).endswith('#'))):
+                if o not in (SH.NodeShape, SH.PropertyGroup, SH.PropertyShape):
+                    if term not in metadata:
+                        metadata[term] = []
+                    metadata[term].append(str(o))
 
     for term in ['versionInfo', 'priorVersion', 'backwardCompatibleWith', 'incompatibleWith']:
         for s, p, o in graph.triples((None, OWL[term], None)):
-            if term not in metadata:
-                metadata[term] = []
-            metadata[term].append(str(o))
+            if isinstance(s, rdflib.term.BNode) or (isinstance(s, rdflib.term.URIRef) and (str(s).endswith('/') or str(s).endswith('#'))):
+                if o not in (SH.NodeShape, SH.PropertyGroup, SH.PropertyShape):
+                    if term not in metadata:
+                        metadata[term] = []
+                    metadata[term].append(str(o))
 
     for term in ['altLabel', 'changeNote', 'definition', 'editorialNote', 'example', 'hiddenLabel', 'historyNote', 'note', 'prefLabel', 'scopeNote']:
         for s, p, o in graph.triples((None, SKOS[term], None)):
-            if term not in metadata:
-                metadata[term] = []
-            metadata[term].append(str(o))
+            if isinstance(s, rdflib.term.BNode) or (isinstance(s, rdflib.term.URIRef) and (str(s).endswith('/') or str(s).endswith('#'))):
+                if o not in (SH.NodeShape, SH.PropertyGroup, SH.PropertyShape):
+                    if term not in metadata:
+                        metadata[term] = []
+                    metadata[term].append(str(o))
 
     for term, values in metadata.items():
         if len(values) == 1:
