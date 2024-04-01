@@ -4,7 +4,7 @@ metadata:
   created: '2018-11-13' # bla
   creator: "Dominik Tomaszuk"
 shapes: 
-  - targetNode: Person
+  - targetClass: Person
     properties: 
       - cardinality: 1
         datatype: string
@@ -18,7 +18,7 @@ shapes:
         relations: 
           - name: role
             datatype: string
-  - targetNode: Movie
+  - targetClass: Movie
     properties: 
       - cardinality: 1
         datatype: string

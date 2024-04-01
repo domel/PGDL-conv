@@ -14,14 +14,14 @@
             sh:path <urn:pg:1.0:name> ],
         [ sh:datatype xsd:int ;
             sh:path <urn:pg:1.0:born> ] ;
-    sh:targetNode <urn:pg:1.0:Person> .
+    sh:targetClass <urn:pg:1.0:Person> .
 
 <urn:pg:1.0:Shape2> a sh:NodeShape ;
     sh:property [ sh:datatype xsd:string ;
             sh:path <urn:pg:1.0:title> ],
         [ sh:datatype xsd:int ;
             sh:path <urn:pg:1.0:realized> ] ;
-    sh:targetNode <urn:pg:1.0:Movie> .
+    sh:targetClass <urn:pg:1.0:Movie> .
 
 [] dcterms:created "2018-11-13"^^xsd:date ;
    dcterms:publisher "bla" ;

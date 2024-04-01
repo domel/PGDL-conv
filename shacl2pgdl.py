@@ -59,7 +59,7 @@ def parse_shacl(graph):
 
     # Extract shapes
     for shape in graph.subjects(RDF.type, SH.NodeShape):
-        shape_dict = {'targetNode': get_last_segment(str(graph.value(shape, SH.targetNode)))}
+        shape_dict = {'targetClass': get_last_segment(str(graph.value(shape, SH.targetClass)))}
         properties = []
         edges = []
 

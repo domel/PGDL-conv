@@ -61,7 +61,7 @@ if args.file:
         except:
             print('There are not any information about PGDL creator')
         exit()
-        print(data['shapes'][0]['targetNode'])
+        print(data['shapes'][0]['targetClass'])
 
     if args.json:
         json = json.dumps(data)
@@ -127,7 +127,7 @@ if args.file:
 
         for shape in data.get('shapes', []):
             try:
-                tn1 = shape['targetNode']
+                tn1 = shape['targetClass']
                 print('type ' + tn1 + ' {')
             except:
                 print('# There is no information about target node')
@@ -180,7 +180,7 @@ if args.file:
                 # print(indentation + '# There is no information about edge.')
                 try:
                     for sh in data.get('shapes', []):
-                        if sh['targetNode'] == pnd1:
+                        if sh['targetClass'] == pnd1:
                             # TODO
                             print_edge_details('Person', 'IN')
                             print_relation_details()
@@ -230,10 +230,10 @@ if args.file:
             shape_id = f"Shape{shape_counter}"
             shape_counter += 1
             try:
-                tn1 = shape['targetNode']
+                tn1 = shape['targetClass']
                 shape_ref = URIRef(f"urn:pg:1.0:{shape_id}")
                 g.add((shape_ref, RDF.type, sh.NodeShape))
-                g.add((shape_ref, sh.targetNode, URIRef("urn:pg:1.0:" + tn1)))
+                g.add((shape_ref, sh.targetClass, URIRef("urn:pg:1.0:" + tn1)))
             except KeyError:
                 print('# There is no information about target node')
 
